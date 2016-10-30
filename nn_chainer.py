@@ -44,23 +44,23 @@ class Model(Chain):
         )
 
     def __call__(self, x_):
-        h1 = F.tanh(self.l1(x))
+        h1 = F.tanh(self.l1(x_))
         y_ = self.l2(h1)
         return y_
 
 # Classifier Chain作成
-_model = L.Classifier(Model())
+model_ = L.Classifier(Model())
 
 # optimizer作成
 optimizer = optimizers.Adam()
-optimizer.setup(_model)
+optimizer.setup(model_)
 
 # 学習
 x = Variable(X.astype(np.float32))
 t = Variable(y.astype(np.int32))
 
 for _ in range(20000):
-    optimizer.update(_model, x, t)
+    optimizer.update(model_, x, t)
 
 
 def predict(model, x_data):
@@ -68,6 +68,5 @@ def predict(model, x_data):
     y_ = model.predictor(x_)
     return np.argmax(y_.data, axis=1)
 
-plot_decision_boundary(lambda x_: predict(_model, x_))
+plot_decision_boundary(lambda x_: predict(model_, x_))
 plt.savefig('plt-chainer-02.png')
-
