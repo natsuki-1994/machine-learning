@@ -89,7 +89,7 @@ l3_W = []
 
 
 # 学習
-for epoch in range(n_epoch):
+for epoch in xrange(1, n_epoch+1):
     print('epoch: {}'.format(epoch))
 
     perm = np.random.permutation(N)  # N個の順番をランダムに並び替える
@@ -121,8 +121,8 @@ for epoch in range(n_epoch):
     sum_accuracy = 0
     sum_loss = 0
     for i in xrange(0, N_test, batchsize):
-        x_batch = x_test[perm[i:i+batchsize]]
-        y_batch = y_test[perm[i:i+batchsize]]
+        x_batch = x_test[i:i+batchsize]
+        y_batch = y_test[i:i+batchsize]
 
         # 順伝播させて誤差と精度を算出
         loss, acc = forward(x_batch, y_batch)
