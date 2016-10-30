@@ -133,7 +133,7 @@ for epoch in xrange(1, n_epoch+1):
         sum_accuracy += float(cuda.to_cpu(acc.data)) * batchsize
 
     # テストデータの誤差と、正解精度を表示
-    print('train mean loss={}, accuracy={}'.format(sum_loss / N_test, sum_accuracy / N_test))
+    print('test mean loss={}, accuracy={}'.format(sum_loss / N_test, sum_accuracy / N_test))
 
     # 学習したパラメータを保存
     l1_W.append(model.l1.W)
