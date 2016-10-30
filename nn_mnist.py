@@ -75,6 +75,7 @@ def forward(x_data, y_data, train=True):
     return F.softmax_cross_entropy(y, t), F.accuracy(y, t)
 
 # 最適化手法（optimizer）の設定
+# optimizerはパラメータと勾配からなり、update()を実行するたびに対応する勾配に基づきパラメータを更新
 optimizer = optimizers.Adam()
 optimizer.setup(model.collect_parameters())
 
