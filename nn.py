@@ -38,9 +38,9 @@ def plot_decision_boundary(pred_func):
     plt.contourf(xx, yy, Z, cmap=plt.cm.Spectral)
     plt.scatter(X[:, 0], X[:, 1], s=40, c=y, cmap=plt.cm.Spectral)
 
-# plot_decision_boundary(lambda x: clf.predict(x))
-# plt.title("Logistic Regression")
-# plt.savefig('plt-02.png')
+plot_decision_boundary(lambda x: clf.predict(x))
+plt.title("Logistic Regression")
+plt.savefig('plt-02.png')
 
 num_examples = len(X)  # 学習用データサイズ
 nn_input_dim = 2  # インプット用次元数（縦×横）
@@ -83,7 +83,7 @@ def predict(model, x):
     exp_scores = np.exp(z2)
     probs = exp_scores / np.sum(exp_scores, axis=1, keepdims=True)
 
-    print np.argmax(probs, axis=1)
+    return np.argmax(probs, axis=1)
 
 
 # ニューラルネットワークのパラメータを学習しモデルを返す関数
