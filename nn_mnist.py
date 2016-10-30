@@ -6,7 +6,6 @@ import numpy as np
 from sklearn.datasets import fetch_mldata
 from chainer import cuda, Variable, FunctionSet, optimizers
 import chainer.functions as F
-import sys
 
 plt.style.use('ggplot')
 
@@ -67,12 +66,12 @@ model = FunctionSet(l1=F.Linear(784, n_units),
 # ニューラルネットの順伝播の構造を定義
 def forward(x_data, y_data, train=True):
     x, t = Variable(x_data), Variable(y_data)  # データは配列からChainer特有のVariable型（クラス）のオブジェクトに変換
-    h1 = F.dropout(F.relu(model.l1(x)), train=train)
-    h2 = F.dropout(F.relu(model.l2(h1)), train=train)
-    y = model.l3(h2)
+    h1_ = F.dropout(F.relu(model.l1(x)), train=train)
+    h2_ = F.dropout(F.relu(model.l2(h1_)), train=train)
+    y_ = model.l3(h2_)
 
     # 誤差関数としてソフトマックス関数の交差エントロピー関数を用いて誤差を導出
-    return F.softmax_cross_entropy(y, t), F.accuracy(y, t)
+    return F.softmax_cross_entropy(y_, t), F.accuracy(y_, t)
 
 # 最適化手法（optimizer）の設定
 # optimizerはパラメータと勾配からなり、update()を実行するたびに対応する勾配に基づきパラメータを更新
@@ -148,3 +147,54 @@ plt.plot(range(len(test_acc)), test_acc)
 plt.legend(['train_acc', 'test_acc'], loc=4)
 plt.title('Accuracy of digit recognition')
 plt.savefig('plt-mnist-01.png')
+
+plt.style.use('fivethirtyeight')
+
+
+# 学習したモデルを使用して答え合わせ
+def draw_digit3(data, n, ans, recog):
+    size = 28
+    plt.subplot(10, 10, n)
+    Z = data.reshape(size, size)
+    Z = Z[::-1, :]  # 上下反転
+    plt.xlim(0, 27)
+    plt.ylim(0, 27)
+    plt.pcolor(Z)
+    plt.title('ans={}, recog={}'.format(ans, recog), size=8)
+    plt.gray()
+    plt.tick_params(labelbottom='off')
+    plt.tick_params(labelleft='off')
+
+plt.figure(figsize=(15, 15))
+cnt = 0
+for idx in np.random.permutation(N)[:100]:
+    xxx = x_train[idx].astype(np.float32)
+    h1 = F.dropout(F.relu(model.l1(Variable(xxx.reshape(1, 784)))), train=False)
+    h2 = F.dropout(F.relu(model.l2(h1)), train=False)
+    y = model.l3(h2)
+    cnt += 1
+    draw_digit3(x_train[idx], cnt, y_train[idx], np.argmax(y.data))
+
+plt.show()
+
+
+def draw_digit2(data, n, i_):
+    size = 28
+    plt.subplot(10, 10, n)
+    Z = data.reshape(size, size)
+    Z = Z[::-1, :]  # 上下反転
+    plt.xlim(0, 27)
+    plt.ylim(0, 27)
+    plt.pcolor(Z)
+    plt.title('{}'.format(i_), size=9)
+    plt.gray()
+    plt.tick_params(labelbottom='off')
+    plt.tick_params(labelleft='off')
+
+plt.figure(figsize=(10, 10))
+cnt = 1
+for i in np.random.permutation(1000)[:100]:
+    draw_digit2(l1_W[len(l1_W) - 1][i], cnt, i)  # len(l1_W) : epoch数
+    cnt += 1
+
+plt.show()
